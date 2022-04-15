@@ -1,5 +1,9 @@
 import express from 'express';
 import { RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface } from './interface';
+import Message from './message';
+
+
+
 /* Routhr */
 /**
  * Create a Routhr application.
@@ -14,11 +18,13 @@ export default class Routhr {
      * Set to true to suppress any error that occurs in the application.
      */
     silent: boolean;
+    private message: Message;
     constructor(port: number) {
         this.port = port;
         this.app = express();
         this.routes = [];
         this.silent = false;
+        this.message = new Message(this.silent);
     }
     /* Method useRoutes */ 
     /**
@@ -52,7 +58,7 @@ export default class Routhr {
     }
     init() {
         for (const route of this.routes) {
-            console.log(`Registering route: ${route.path}`, route.method);
+            this.message.create((`Registering route: ${route.path} ${route.method}`));
             switch (route.method) {
                 case 'GET':
                     if (route.middleware) {
