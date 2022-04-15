@@ -1,13 +1,12 @@
 {
   "name": "routhr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "**Routhr** is a simple library for creating and managing server routes.",
-  "main": "./lib/app/index.js",
+  "main": "./lib/index",
   "scripts": {
-    "start": "nodemon ./lib/index.js",
     "prepublish": "tsc -p tsconfig.json"
   },
-  "types": "./lib/app/index.d.ts",
+  "types": "./lib/index.d.ts",
   "keywords": [
     "express",
     "framework",

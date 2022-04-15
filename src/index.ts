@@ -1,5 +1,5 @@
 import express from 'express';
-import { RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface } from '../interface';
+import { RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface } from './interface';
 /* Routhr */
 /**
  * Create a Routhr application.
@@ -9,7 +9,7 @@ export default class Routhr {
     readonly port: number;
     readonly app: express.Application;
     private routes: RouteInterface[];
-    /* Property silent */
+    /* Property silent */ 
     /**
      * Set to true to suppress any error that occurs in the application.
      */
@@ -20,7 +20,7 @@ export default class Routhr {
         this.routes = [];
         this.silent = false;
     }
-    /* Method useRoutes */
+    /* Method useRoutes */ 
     /**
      * Accepts an array of routes and registers them with the application.
      * @param routes: RouteInterface[]
