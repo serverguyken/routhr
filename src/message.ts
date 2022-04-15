@@ -3,7 +3,7 @@ export default class Message {
     constructor(silent: boolean) {
         this.silent = silent;
     }
-    create(...message: string[]) {
+    create(...message: any) {
         if (!this.silent) {
             console.log(message);
         }
