@@ -30,5 +30,5 @@ export interface RouteInterface {
      * @param res - Response object
      * @param next - Next function
      **/
-    middleware?: (req: RequestInterface, res: Response, next: Function) => void;
+    middleware?: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
 }

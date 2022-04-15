@@ -112,4 +112,4 @@ export default class Routhr {
     }
 }
 
-export { RequestInterface, ResponseInterface, RouteInterface };
+export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
