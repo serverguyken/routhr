@@ -1,6 +1,6 @@
 {
   "name": "routhr",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "**Routhr** is a simple library for creating and managing server routes.",
   "main": "./lib/index",
   "scripts": {
