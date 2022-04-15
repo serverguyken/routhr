@@ -23,6 +23,7 @@ export interface RouteInterface {
      * Handler - a function that handles the request and response object.
      * @param req - Request object
      * @param res - Response object
+     * @param next - Next function - optional
      */
     handler: (req: RequestInterface, res: ResponseInterface, next?: NextFunction) => void;
     /**

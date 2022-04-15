@@ -18,12 +18,14 @@ export default class Routhr {
      * Set to true to suppress any error that occurs in the application.
      */
     silent: boolean;
+    nolog: boolean;
     private message: Message;
     constructor(port: number) {
         this.port = port;
         this.app = express();
         this.routes = [];
         this.silent = false;
+        this.nolog = false;
         this.message = new Message();
     }
     /* Method useRoutes */ 
@@ -40,15 +42,13 @@ export default class Routhr {
     /* Method use */
     /**
      * Registers middleware with the application.
-     * @param path: string
-     * @param callback: any
+     * @param callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void
      * @returns routhr instance
      * @example
-     * routhr.use('/', (req, res) => {
+     * routhr.use((req, res) => {
      *    res.send('Hello World');
      * });
      */
-    // path is optional
     use(callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface ) => void) {
         try {
             this.app.use(callback);
@@ -63,7 +63,13 @@ export default class Routhr {
     /* Method set */
     /**
      * Registers middleware with the application but only for a specific route.
-     * @param callback 
+     * @param path: string
+     * @param callback - (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void
+     * @returns routhr instance
+     * @example
+     * routhr.set('/', (req, res) => {
+     *   res.send('Hello World');
+     * });
      */
     set(path: string, callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
         try {
@@ -78,7 +84,9 @@ export default class Routhr {
     }
     init() {
         for (const route of this.routes) {
-            this.message.create((`Registering route: ${route.path} ${route.method}`));
+            if (!this.nolog) {
+                this.message.create((`Registering route: ${route.path} Method: ${route.method}`));
+            }
             switch (route.method) {
                 case 'GET':
                     if (route.middleware) {
