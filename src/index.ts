@@ -113,3 +113,11 @@ export default class Routhr {
 }
 
 export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
+
+const routes = [{
+    path: '/',
+    method: 'GET',
+    handler: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => {
+        res.send('Hello World');
+    }   
+}]

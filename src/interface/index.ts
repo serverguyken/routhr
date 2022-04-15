@@ -1,5 +1,8 @@
 import { Request as RequestInterface, Response as ResponseInterface, NextFunction as NextFunctionInterface } from "express";
 export { RequestInterface, ResponseInterface, NextFunctionInterface };
+export interface Request extends RequestInterface {
+    type: string;
+}
 export interface RouthrInterface {
     routes: RouteInterface[];
     app: Express.Application;
