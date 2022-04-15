@@ -48,12 +48,32 @@ export default class Routhr {
      *    res.send('Hello World');
      * });
      */
-    use(path: string, callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface ) => void) {
+    // path is optional
+    use(callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface ) => void) {
         try {
-            this.app.use(path, callback);
+            this.app.use(callback);
+            return this;
         }
         catch (err) {
-            console.log(`Error registering middleware: ${err}`);
+            if (!this.silent) {
+                console.log(`Error registering middleware: ${err}`);
+            }
+        }
+    }
+    /* Method set */
+    /**
+     * Registers middleware with the application but only for a specific route.
+     * @param callback 
+     */
+    set(path: string, callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
+        try {
+            this.app.set(path, callback);
+            return this;
+        }
+        catch (err) {
+            if (!this.silent) {
+                console.log(`Error registering middleware: ${err}`);
+            }
         }
     }
     init() {
@@ -119,3 +139,8 @@ export default class Routhr {
 }
 
 export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
+
+const routhr = new Routhr(3000);
+routhr.use((req, res) => {
+    res.send('Hello World');
+});
