@@ -24,7 +24,7 @@ export default class Routhr {
         this.app = express();
         this.routes = [];
         this.silent = false;
-        this.message = new Message(this.silent);
+        this.message = new Message();
     }
     /* Method useRoutes */ 
     /**
