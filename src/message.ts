@@ -4,4 +4,7 @@ export default class Message {
     create(...message: string[]): void {
         console.log(...message);
     }
+    error(message: string): void {
+        throw new Error(message);
+    }
 }

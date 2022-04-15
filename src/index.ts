@@ -49,16 +49,21 @@ export default class Routhr {
      *    res.send('Hello World');
      * });
      */
-    use(callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface ) => void) {
+    use(callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
+        if (callback === undefined || callback === null) {
+            if (!this.silent) {
+                this.message.error('Missing callback parameter.');
+            }
+        }
         try {
             this.app.use(callback);
-            return this;
         }
         catch (err) {
             if (!this.silent) {
                 console.log(`Error registering middleware: ${err}`);
             }
         }
+        return this;
     }
     /* Method set */
     /**
@@ -72,15 +77,25 @@ export default class Routhr {
      * });
      */
     set(path: string, callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
+        if (path === undefined || path === null) {
+            if (!this.silent) {
+                this.message.error('Missing path parameter.');
+            }
+        }
+        if (callback === undefined || callback === null) {
+            if (!this.silent) {
+                this.message.error('Missing callback parameter.');
+            }
+        }
         try {
             this.app.set(path, callback);
-            return this;
         }
         catch (err) {
             if (!this.silent) {
                 console.log(`Error registering middleware: ${err}`);
             }
         }
+        return this;
     }
     init() {
         for (const route of this.routes) {
