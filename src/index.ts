@@ -13,11 +13,15 @@ export default class Routhr {
     readonly port: number;
     readonly app: express.Application;
     private routes: RouteInterface[];
-    /* Property silent */ 
+    /* Property silent */
     /**
-     * Set to true to suppress any error that occurs in the application.
+     * Set to true to suppress any error that occurs within the application.
      */
     silent: boolean;
+    /* Property nolog */
+    /**
+     * Set to true to suppress any messages logged to the console.
+     **/
     nolog: boolean;
     private message: Message;
     constructor(port: number) {
