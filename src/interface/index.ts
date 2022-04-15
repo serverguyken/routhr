@@ -1,7 +1,10 @@
-import { Request as RequestInterface, Response as ResponseInterface, NextFunction as NextFunctionInterface } from "express";
-export { RequestInterface, ResponseInterface, NextFunctionInterface };
-export interface Request extends RequestInterface {
-    type: string;
+import { Request, Response , NextFunction} from "express";
+export interface RequestInterface extends Request {
+    
+}
+export interface ResponseInterface extends Response {
+}
+export interface NextFunctionInterface extends NextFunction {
 }
 export interface RouthrInterface {
     routes: RouteInterface[];
@@ -21,7 +24,7 @@ export interface RouteInterface {
      * @param req - Request object
      * @param res - Response object
      */
-    handler: (req: RequestInterface, res: ResponseInterface, next?: NextFunctionInterface) => void;
+    handler: (req: RequestInterface, res: ResponseInterface, next?: NextFunction) => void;
     /**
      * Middleware - a function that handles the middleware for the given route. It is optional.
      * @param req - Request object
