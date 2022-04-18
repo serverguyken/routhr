@@ -1,5 +1,5 @@
 import express from 'express';
-import { RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface, RouteProps } from './interface';
+import { RouthrInterface, RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface, RouteProps, RouthrMiddleWareInterface } from './interface';
 import Message from './message';
 import { generateId } from './utils';
 
@@ -15,6 +15,7 @@ export default class Routhr {
     readonly request;
     private routes: RouteInterface[];
     private route: RouteProps;
+    middleware: RouthrMiddleWareInterface;
     /* Property silent */
     /**
      * Set to true to suppress any error that occurs within the application.
@@ -31,6 +32,9 @@ export default class Routhr {
         this.app = express();
         this.request = express.request;
         this.routes = [];
+        this.middleware = {
+            bodyParser: this.JSONParser,
+        }
         this.silent = false;
         this.nolog = false;
         this.message = new Message();
@@ -58,7 +62,7 @@ export default class Routhr {
     /* Built in middleware */
     /* Method setRouteProps */
     /**
-     * Middleware that sets the route properties.
+     * Middleware that sets the routhr instance on the request object.
     **/
     private setRoutePropsMiddleware(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
         req.routhr = {
@@ -70,7 +74,6 @@ export default class Routhr {
                 subdomains: req.subdomains,
                 queries: req.query,
                 params: req.params,
-
             }
         }
         next();
@@ -105,6 +108,32 @@ export default class Routhr {
         }
         return this.route;
     }
+    JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
+        if (req.method === 'POST' || req.method === 'PUT') {
+            if (req.headers['content-type'] !== 'application/json') {
+                res.status(400).send({
+                    message: "Content-Type must be application/json",
+                });
+            }
+            else {
+                let data = '';
+                req.on('data', (chunk) => {
+                    data += chunk; 
+                });
+                req.on('end', () => {
+                    req.routhr!.rawbody = data;
+                    if (data && data.indexOf('{') > -1) {
+                        req.body = JSON.parse(data);
+                        req.routhr!.data = req.body;
+                    }
+                    next();
+                });
+            }
+        }
+        else {
+            next();
+        }
+    };
     /* Method use */
     /**
      * Registers middleware with the application.
@@ -115,7 +144,7 @@ export default class Routhr {
      *    res.send('Hello World');
      * });
      */
-    use(callback: <T>(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => T) {
+    use(callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
         if (callback === undefined || callback === null) {
             if (!this.silent) {
                 this.message.error('Missing callback parameter.');
@@ -163,85 +192,128 @@ export default class Routhr {
         }
         return this;
     }
-    init() {
-        for (const route of this.routes) {
-
-            
-            if (!this.nolog) {
-                this.message.create((`Registering route: ${route.path} Method: ${route.method}`));
+    private checkMiddleware(route: RouteInterface, type_: string) {
+        if (route.middleware && route.middlewares) {
+            if (!this.silent) {
+                this.message.error(`Route ${route.path} has both ${type_} and ${type_}s.`);
             }
+        } else {
+            return true
+        }
+    }
+
+    private init() {
+        let log = '';
+        for (const route of this.routes) {
             switch (route.method) {
                 case 'GET':
-                    if (route.middleware) {
-                        this.app.get(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
-                    }
-                    else {
-                        this.app.get(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.get(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.get(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.get(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'POST':
-                    if (route.middleware) {
-                        this.app.post(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.post(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.post(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.post(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.post(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'PUT':
-                    if (route.middleware) {
-                        this.app.put(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.put(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.put(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.put(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.put(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'DELETE':
-                    if (route.middleware) {
-                        this.app.delete(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.delete(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.delete(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.delete(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.delete(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'PATCH':
-                    if (route.middleware) {
-                        this.app.patch(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.patch(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.patch(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.patch(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.patch(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'HEAD':
-                    if (route.middleware) {
-                        this.app.head(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.head(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.head(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.head(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.head(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'OPTIONS':
-                    if (route.middleware) {
-                        this.app.options(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.options(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.options(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.options(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.options(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 case 'ALL':
-                    if (route.middleware) {
-                        this.app.all(`${route.path}`, route.middleware, route.handler);
-                    }
-                    else {
-                        this.app.all(`${route.path}`, route.handler);
+                    if (this.checkMiddleware(route, 'middleware')) {
+                        if (route.middleware) {
+                            this.app.all(`${route.path}`, [this.setRoutePropsMiddleware, route.middleware], route.handler);
+                        } else if (route.middlewares) {
+                            this.checkMiddleware(route, 'middlewares');
+                            this.app.all(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares], route.handler);
+                        }
+                        else {
+                            this.app.all(`${route.path}`, [this.setRoutePropsMiddleware], route.handler);
+                        }
                     }
                     break;
                 default:
                     throw new Error(`Unsupported route method: ${route.method}`);
             }
             setTimeout(() => {
-                if (!this.nolog) {
-                    this.message.create((`Successfully registered route: ${route.path} Method: ${route.method}`));
-                }
             }, 500);
         }
     }
@@ -289,3 +361,5 @@ export default class Routhr {
 }
 
 export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
+
+

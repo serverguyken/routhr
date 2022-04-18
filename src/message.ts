@@ -7,4 +7,4 @@ export default class Message {
     error(message: string): void {
         throw new Error(message);
     }
-} 
+}
