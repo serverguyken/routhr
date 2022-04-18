@@ -1,6 +1,10 @@
+<img src="https://cdn.kehindeakinsanya.com/images/routhr.png" width="240" height="200"/>
+
 # Routhr
 
-**Routhr** is a simple library for creating and managing server routes. It uses express.js as the server framework.
+**Routhr** is a Node.js Framework for building web Applications and APIs.
+
+<img src="https://img.shields.io/npm/v/routhr?style=for-the-badge"/> <img src="https://img.shields.io/npm/dt/routhr?style=for-the-badge"/> <img src="https://img.shields.io/github/checks-status/serverguyken/routhr/main?style=for-the-badge"/> 
 
 ## Installation
 
@@ -14,13 +18,15 @@ import Routhr  from 'routhr';
 import routes from './routes';
 const routhr = new Routhr();
 
-// Routes
-routhr.useRoutes(routes); // create routes 
-
 // Start server
 routhr.listen(3000); // start server on port 3000
 
 // Routes
+routhr.use('/', req, res) => {
+  res.send('Hello World')
+}
+// or call useRoutes method which takes an array of objects with properties: path, method, handler, and middleware(optional)
+
 import { RouteInterface } from 'routhr';
 const routes: RouteInterface = [
     {
@@ -35,7 +41,6 @@ const routes: RouteInterface = [
         }
     }
 ];
+
+routhr.useRoutes(routes); // create routes 
 ```
-
-
-
