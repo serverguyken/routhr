@@ -15,7 +15,11 @@ export interface RouthrInterface {
     init: () => void;
     useRoutes: (routes: RouteInterface[]) => void;
     use: (path: string, callback: any) => void;
-    listen: (callback?: () => void) => void;
+    /**
+     * @deprecated use start instead
+     */
+    listen: (callback?: () => void) => void; // deprecated
+    start: (callback?: () => void) => void;
 }
 export interface RouteInterface {
     path: string;
