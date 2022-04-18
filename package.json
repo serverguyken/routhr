@@ -4,7 +4,9 @@
   "description": "**Routhr** is a simple library for creating and managing server routes.",
   "main": "./lib/index",
   "scripts": {
-    "prepublish": "tsc -p tsconfig.json"
+    "prepublish": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json -w"
   },
   "types": "./lib/index.d.ts",
   "keywords": [

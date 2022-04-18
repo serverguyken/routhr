@@ -1,8 +1,9 @@
-import { Request, Response , NextFunction} from "express";
+/// <reference types="express-serve-static-core" />
+import { Request, Response, NextFunction } from "express";
 export interface RequestInterface extends Request {
     routhr?: {
         route: RouteProps | null;
-    }
+    };
 }
 export interface ResponseInterface extends Response {
 }
@@ -20,7 +21,6 @@ export interface RouthrInterface {
 export interface RouteInterface {
     path: string;
     method: string;
-    /* Handler is a function that takes a request and response object as parameters. */
     /**
      * Handler - a function that handles the request and response object.
      * @param req - Request object
@@ -36,15 +36,13 @@ export interface RouteInterface {
      **/
     middleware?: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
 }
-
-
 export interface RouteProps {
     id: string;
     path: string;
     queries: {
         [key: string]: string;
-    }
+    };
     params: {
         [key: string]: string;
-    }
+    };
 }
