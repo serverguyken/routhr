@@ -1,7 +1,7 @@
 import { Request, Response , NextFunction} from "express";
 export interface RequestInterface extends Request {
     routhr?: {
-        route: RouteProps | null;
+        route: RouteProps;
     }
 }
 export interface ResponseInterface extends Response {
@@ -41,8 +41,11 @@ export interface RouteInterface {
 export interface RouteProps {
     id: string;
     path: string;
+    domain: string;
+    subdomain: string | null;
+    subdomains: string[];
     queries: {
-        [key: string]: string;
+        [key: string]: string | string[] | undefined | any;
     }
     params: {
         [key: string]: string;

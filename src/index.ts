@@ -37,6 +37,9 @@ export default class Routhr {
         this.route = {
             id: '',
             path: '',
+            domain: '',
+            subdomain: '',
+            subdomains: [],
             queries: {},
             params: {},
         };
@@ -58,9 +61,17 @@ export default class Routhr {
      * Middleware that sets the route properties.
     **/
     private setRoutePropsMiddleware(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
-        this.setCurrentRoute(req);
         req.routhr = {
-            route: this.getCurrentRoute(),
+            route: {
+                id: generateId(),
+                path: req.path,
+                domain: req.hostname,
+                subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
+                subdomains: req.subdomains,
+                queries: req.query,
+                params: req.params,
+
+            }
         }
         next();
     }
@@ -82,10 +93,13 @@ export default class Routhr {
         const params = req.params;
         this.setRoute(id, path, queries, params);
     }
-    private setRoute(id: string, path: string, queries: {}, params: {}) {
+    private setRoute(id: string, path: string, queries: {}, params: {}, domain: string = '', subdomain: string = '', subdomains: string[] = []) {
         this.route = {
             id,
             path,
+            domain,
+            subdomain,
+            subdomains,
             queries,
             params,
         }
