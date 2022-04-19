@@ -28,7 +28,7 @@ routhr.use('/', req, res) => {
 // or call useRoutes method
 
 import { RouteInterface } from 'routhr';
-const routes: RouteInterface = [
+const routes: RouteInterface[] = [
     {
         path: '/',
         method: 'GET',
