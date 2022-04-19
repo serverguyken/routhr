@@ -330,11 +330,6 @@ export default class Routhr {
      * @deprecated Use start instead.
      **/
     listen(callback?: () => void) {
-        if (this.routes.length === 0) {
-            if (!this.silent) {
-                throw new Error('No routes have been registered.');
-            }
-        }
         this.app.listen(this.port, callback);
         return this;
     }
