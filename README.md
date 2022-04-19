@@ -19,7 +19,7 @@ import routes from './routes';
 const routhr = new Routhr();
 
 // Start server
-routhr.listen(3000); // start server on port 3000
+routhr.start(3000); // start server on port 3000
 
 // Routes
 routhr.use('/', req, res) => {
