@@ -19,16 +19,16 @@ import routes from './routes';
 const routhr = new Routhr();
 
 // Start server
-routhr.listen(3000); // start server on port 3000
+routhr.start(3000); // start server on port 3000
 
 // Routes
 routhr.use('/', req, res) => {
   res.send('Hello World')
 }
-// or call useRoutes method which takes an array of objects with properties: path, method, handler, and middleware(optional)
+// or call useRoutes method
 
 import { RouteInterface } from 'routhr';
-const routes: RouteInterface = [
+const routes: RouteInterface[] = [
     {
         path: '/',
         method: 'GET',
