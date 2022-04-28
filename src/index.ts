@@ -111,48 +111,43 @@ export default class Routhr {
         return this.route;
     }
     private JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
-        const json = () => {
-            if (req.method === 'POST' || req.method === 'PUT') {
-                if (req.headers['content-type'] !== 'application/json') {
-                    res.status(400).send({
-                        message: "Content-Type must be application/json",
-                    });
-                }
-                else {
-                    let data = '';
-                    req.on('data', (chunk) => {
-                        data += chunk;
-                    });
-                    req.on('end', () => {
-                        req.routhr = {
-                            route: {
-                                id: generateId(),
-                                path: req.path,
-                                domain: req.hostname,
-                                subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
-                                subdomains: req.subdomains,
-                                queries: req.query,
-                                params: req.params,
-                            },
-                            rawbody: data,
-                        }
-                        if (data && data.indexOf('{') > -1) {
-                            req.body = JSON.parse(data);
-                            req.routhr = {
-                                ...req.routhr,
-                                data: req.body,
-                            }
-                        }
-                        next();
-                    });
+        if (req.method === 'POST' || req.method === 'PUT') {
+            if (req.headers['content-type'] !== 'application/json') {
+                if (!this.silent) {
+                    this.message.error('Invalid content-type. Expected application/json');
                 }
             }
             else {
-                next();
+                let data = '';
+                req.on('data', (chunk) => {
+                    data += chunk;
+                });
+                req.on('end', () => {
+                    req.routhr = {
+                        route: {
+                            id: generateId(),
+                            path: req.path,
+                            domain: req.hostname,
+                            subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
+                            subdomains: req.subdomains,
+                            queries: req.query,
+                            params: req.params,
+                        },
+                        rawbody: data,
+                    }
+                    if (data && data.indexOf('{') > -1) {
+                        req.body = JSON.parse(data);
+                        req.routhr = {
+                            ...req.routhr,
+                            data: req.body,
+                        }
+                    }
+                    next();
+                });
             }
         }
-        return {
-            json,
+        else {
+            next();
         }
     };
     /* Method use */
@@ -384,7 +379,7 @@ export default class Routhr {
      * @param path 
      * @param handler 
      */
-    static new(port:number) {
+    static new(port: number) {
         return new Routhr(port);
     }
     static(root: string, serverStaticOptions?: any) {
