@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import { RouthrInterface, RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface, RouteProps, RouthrMiddleWareInterface } from './interface';
 import Message from './message';
 import { generateId } from './utils';
@@ -33,7 +33,9 @@ export default class Routhr {
         this.request = express.request;
         this.routes = [];
         this.middleware = {
-            bodyParser: this.JSONParser,
+            bodyParser: {
+                json: this.JSONParser,
+            },
         }
         this.silent = false;
         this.nolog = false;
@@ -108,44 +110,49 @@ export default class Routhr {
         }
         return this.route;
     }
-    JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
-        if (req.method === 'POST' || req.method === 'PUT') {
-            if (req.headers['content-type'] !== 'application/json') {
-                res.status(400).send({
-                    message: "Content-Type must be application/json",
-                });
+    private JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
+        const json = () => {
+            if (req.method === 'POST' || req.method === 'PUT') {
+                if (req.headers['content-type'] !== 'application/json') {
+                    res.status(400).send({
+                        message: "Content-Type must be application/json",
+                    });
+                }
+                else {
+                    let data = '';
+                    req.on('data', (chunk) => {
+                        data += chunk;
+                    });
+                    req.on('end', () => {
+                        req.routhr = {
+                            route: {
+                                id: generateId(),
+                                path: req.path,
+                                domain: req.hostname,
+                                subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
+                                subdomains: req.subdomains,
+                                queries: req.query,
+                                params: req.params,
+                            },
+                            rawbody: data,
+                        }
+                        if (data && data.indexOf('{') > -1) {
+                            req.body = JSON.parse(data);
+                            req.routhr = {
+                                ...req.routhr,
+                                data: req.body,
+                            }
+                        }
+                        next();
+                    });
+                }
             }
             else {
-                let data = '';
-                req.on('data', (chunk) => {
-                    data += chunk; 
-                });
-                req.on('end', () => {
-                    req.routhr = {
-                        route: {
-                            id: generateId(),
-                            path: req.path,
-                            domain: req.hostname,
-                            subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
-                            subdomains: req.subdomains,
-                            queries: req.query,
-                            params: req.params,
-                        },
-                        rawbody: data,
-                    }
-                    if (data && data.indexOf('{') > -1) {
-                        req.body = JSON.parse(data);
-                        req.routhr = {
-                            ...req.routhr,
-                            data: req.body,
-                        }
-                    }
-                    next();
-                });
+                next();
             }
         }
-        else {
-            next();
+        return {
+            json,
         }
     };
     /* Method use */
@@ -372,8 +379,21 @@ export default class Routhr {
         this.app.listen(this.port, callback);
         return this;
     }
+    /**
+     * Static method to create a new routhr instance.
+     * @param path 
+     * @param handler 
+     */
+    static new(port:number) {
+        return new Routhr(port);
+    }
+    static(root: string, serverStaticOptions?: any) {
+        express.static(root, serverStaticOptions);
+    }
 }
 
 export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
 
 
+const routhr = new Routhr(3001);
+routhr.middleware.bodyParser.json;

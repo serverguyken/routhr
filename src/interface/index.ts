@@ -29,8 +29,17 @@ export interface RouthrInterface {
     start: (callback?: () => void) => void;
 }
 type MiddlewareInterface = (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
+
+
+interface BuiltinMiddlewareInterface {
+    bodyParser: {
+        json: MiddlewareInterface;
+    }
+}
+
+
 export interface RouthrMiddleWareInterface { 
-    bodyParser: MiddlewareInterface;
+    bodyParser: BuiltinMiddlewareInterface['bodyParser'];
 }
 export interface RouteInterface {
     /**
