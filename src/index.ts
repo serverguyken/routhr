@@ -121,14 +121,25 @@ export default class Routhr {
                     data += chunk; 
                 });
                 req.on('end', () => {
-                    if (req.routhr) {
-                        req.routhr.rawbody = data;
-                        if (data && data.indexOf('{') > -1) {
-                            req.body = JSON.parse(data);
-                            req.routhr!.data = req.body;
+                    req.routhr = {
+                        route: {
+                            id: generateId(),
+                            path: req.path,
+                            domain: req.hostname,
+                            subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
+                            subdomains: req.subdomains,
+                            queries: req.query,
+                            params: req.params,
+                        },
+                        rawbody: data,
+                    }
+                    if (data && data.indexOf('{') > -1) {
+                        req.body = JSON.parse(data);
+                        req.routhr = {
+                            ...req.routhr,
+                            data: req.body,
                         }
                     }
-                    
                     next();
                 });
             }
@@ -333,6 +344,11 @@ export default class Routhr {
      * @deprecated Use start instead.
      **/
     listen(callback?: () => void) {
+        if (this.routes.length === 0) {
+            if (!this.silent) {
+                throw new Error('No routes have been registered.');
+            }
+        }
         this.app.listen(this.port, callback);
         return this;
     }
