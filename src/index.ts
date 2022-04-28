@@ -113,9 +113,7 @@ export default class Routhr {
     private JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
         if (req.method === 'POST' || req.method === 'PUT') {
             if (req.headers['content-type'] !== 'application/json') {
-                if (!this.silent) {
-                    this.message.error('Invalid content-type. Expected application/json');
-                }
+                throw new Error('Invalid content-type. Expected application/json');
             }
             else {
                 let data = '';
@@ -141,7 +139,7 @@ export default class Routhr {
                             ...req.routhr,
                             data: req.body,
                         }
-                    }
+                    } 
                     next();
                 });
             }
@@ -379,7 +377,7 @@ export default class Routhr {
      * @param path 
      * @param handler 
      */
-    static new(port: number) {
+    static new(port:number) {
         return new Routhr(port);
     }
     static(root: string, serverStaticOptions?: any) {
