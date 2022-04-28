@@ -121,11 +121,14 @@ export default class Routhr {
                     data += chunk; 
                 });
                 req.on('end', () => {
-                    req.routhr!.rawbody = data;
-                    if (data && data.indexOf('{') > -1) {
-                        req.body = JSON.parse(data);
-                        req.routhr!.data = req.body;
+                    if (req.routhr) {
+                        req.routhr.rawbody = data;
+                        if (data && data.indexOf('{') > -1) {
+                            req.body = JSON.parse(data);
+                            req.routhr!.data = req.body;
+                        }
                     }
+                    
                     next();
                 });
             }
