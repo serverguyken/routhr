@@ -393,7 +393,3 @@ export default class Routhr {
 }
 
 export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
-
-
-const routhr = new Routhr(3001);
-routhr.middleware.bodyParser.json;
