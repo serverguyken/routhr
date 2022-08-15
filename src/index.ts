@@ -10,7 +10,6 @@ import { generateId } from './utils';
  * @param port - Port to listen on
  */
 export default class Routhr {
-    readonly port: number;
     readonly app: express.Application;
     readonly request;
     private routes: RouteInterface[];
@@ -27,8 +26,7 @@ export default class Routhr {
      **/
     nolog: boolean;
     private message: Message;
-    constructor(port: number) {
-        this.port = port;
+    constructor() {
         this.app = express();
         this.request = express.request;
         this.routes = [];
@@ -56,6 +54,9 @@ export default class Routhr {
      * @param routes: RouteInterface[]
      * @returns routhr instance
      */
+    private setRouthr() {
+        
+    }
     useRoutes(routes: RouteInterface[]) {
         this.routes = routes;
         this.init();
@@ -76,7 +77,9 @@ export default class Routhr {
                 subdomains: req.subdomains,
                 queries: req.query,
                 params: req.params,
-            }
+            },
+            rawbody: req.rawBody,
+            body: req.body,
         }
         next();
     }
@@ -122,22 +125,14 @@ export default class Routhr {
                 });
                 req.on('end', () => {
                     req.routhr = {
-                        route: {
-                            id: generateId(),
-                            path: req.path,
-                            domain: req.hostname,
-                            subdomain: req.subdomains[req.subdomains.length - 1] ? req.subdomains[req.subdomains.length - 1] : null,
-                            subdomains: req.subdomains,
-                            queries: req.query,
-                            params: req.params,
-                        },
+                        ...req.routhr,
                         rawbody: data,
                     }
                     if (data && data.indexOf('{') > -1) {
                         req.body = JSON.parse(data);
                         req.routhr = {
                             ...req.routhr,
-                            data: req.body,
+                            body: req.body,
                         }
                     } 
                     next();
@@ -343,13 +338,13 @@ export default class Routhr {
      * });
      * @deprecated Use start instead.
      **/
-    listen(callback?: () => void) {
+    listen(port: number, callback?: () => void) {
         if (this.routes.length === 0) {
             if (!this.silent) {
                 throw new Error('No routes have been registered.');
             }
         }
-        this.app.listen(this.port, callback);
+        this.app.listen(port, callback);
         return this;
     }
     /* Method start */
@@ -363,13 +358,13 @@ export default class Routhr {
      *  console.log('Server is running on port 3000');
      * });
      **/
-    start(callback?: () => void) {
+    start(port: number, callback?: () => void) {
         if (this.routes.length === 0) {
             if (!this.silent) {
                 throw new Error('No routes have been registered.');
             }
         }
-        this.app.listen(this.port, callback);
+        this.app.listen(port, callback);
         return this;
     }
     /**
@@ -377,12 +372,12 @@ export default class Routhr {
      * @param path 
      * @param handler 
      */
-    static new(port:number) {
-        return new Routhr(port);
+    static new() {
+        return new Routhr();
     }
     static(root: string, serverStaticOptions?: any) {
         express.static(root, serverStaticOptions);
     }
 }
 
-export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface };
+export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface, express };

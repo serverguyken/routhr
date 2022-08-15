@@ -1,16 +1,4 @@
 import { Request, Response , NextFunction} from "express";
-export interface RequestInterface extends Request {
-    rawBody?: string;
-    routhr?: {
-        route?: RouteProps;
-        rawbody?: string;
-        data?: any;
-    }
-}
-export interface ResponseInterface extends Response {
-}
-export interface NextFunctionInterface extends NextFunction {
-}
 
 export interface RouthrInterface {
     routes: RouteInterface[];
@@ -28,6 +16,26 @@ export interface RouthrInterface {
     listen: (callback?: () => void) => void; // deprecated
     start: (callback?: () => void) => void;
 }
+
+export interface RequestInterface extends Request {
+    rawBody?: string;
+    routhr?: RouthrObject;
+}
+
+
+export interface RouthrObject {
+    route?: RouteProps;
+    rawbody?: string;
+    body?: any;
+}
+
+export interface ResponseInterface extends Response {
+}
+
+export interface NextFunctionInterface extends NextFunction {
+}
+
+
 type MiddlewareInterface = (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
 
 
@@ -41,6 +49,8 @@ interface BuiltinMiddlewareInterface {
 export interface RouthrMiddleWareInterface { 
     bodyParser: BuiltinMiddlewareInterface['bodyParser'];
 }
+
+
 export interface RouteInterface {
     /**
      *The specified path of the route
@@ -73,7 +83,6 @@ export interface RouteInterface {
     **/
     middlewares?: MiddlewareInterface[];
 }
-
 
 export interface RouteProps {
     id: string;

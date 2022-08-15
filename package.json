@@ -1,9 +1,10 @@
 {
   "name": "routhr",
-  "version": "1.1.4",
+  "version": "1.2.1",
   "description": "**Routhr** is a Node.js Framework for building web Applications and APIs.",
   "main": "./lib/index.js",
   "scripts": {
+    "start": "node ./lib/test.js",
     "prepublish": "tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -p tsconfig.json -w"
