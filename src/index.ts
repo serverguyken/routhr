@@ -196,7 +196,7 @@ export default class Routhr {
      * @param callback (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void
      * @returns routhr instance
      * @example
-     * routhr.useWithoutPath((req, res) => {
+     * routhr.use((req, res) => {
      *   res.send('Hello World');
      * });
     */
