@@ -169,7 +169,7 @@ export default class Routhr {
      *    res.send('Hello World');
      * });
      */
-    register(path: string, callback?: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
+    register(path: string, callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
         if (path === undefined || path === null) {
             if (!this.silent) {
                 this.message.error('Missing path parameter.');
@@ -181,7 +181,7 @@ export default class Routhr {
             }
         }
         try {
-            this.app.use(callback as any);
+            this.app.use(path, callback);
         }
         catch (err) {
             if (!this.silent) {
