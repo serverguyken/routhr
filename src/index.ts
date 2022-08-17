@@ -349,8 +349,7 @@ export default class Routhr {
     }
     /* Method start */
     /**
-     * Starts the server.
-     * Note: This method must be called after all routes have been registered.
+     * Start the server.
      * @param callback: any
      * @returns routhr instance
      * @example
