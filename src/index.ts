@@ -207,7 +207,7 @@ export default class Routhr {
             }
         }
         try {
-            this.app.use(callback as any);
+            this.app.use(callback);
         }
         catch (err) {
             if (!this.silent) {
