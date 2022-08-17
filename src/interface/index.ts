@@ -36,10 +36,10 @@ export interface NextFunctionInterface extends NextFunction {
 }
 
 
-type MiddlewareInterface = (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
+export type MiddlewareInterface = (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
 
 
-interface BuiltinMiddlewareInterface {
+export interface BuiltinMiddlewareInterface {
     bodyParser: {
         json: MiddlewareInterface;
     }
