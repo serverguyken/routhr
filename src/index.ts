@@ -55,8 +55,23 @@ export default class Routhr {
      * @returns routhr instance
      */
     private setRouthr() {
-        
+
     }
+    /**
+     * Registers routes with the application.
+     * @param routes `RouteInterface[]
+     * @returns `routhr` instance
+     * @example
+     * routhr.useRoutes([
+     *   {
+     *      path: '/',
+     *      method: 'GET',
+     *      handler: (req, res) => {
+     *          res.send('Hello World');
+     *      }
+     *  }
+     * ]);
+     */
     useRoutes(routes: RouteInterface[]) {
         this.routes = routes;
         this.init();
@@ -134,7 +149,7 @@ export default class Routhr {
                             ...req.routhr,
                             body: req.body,
                         }
-                    } 
+                    }
                     next();
                 });
             }
@@ -143,16 +158,48 @@ export default class Routhr {
             next();
         }
     };
-    /* Method use */
+    /* Method register */
     /**
      * Registers middleware with the application.
-     * @param callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void
+     * @param path Path to register the middleware on
+     * @param callback Middleware function to register for the given path
      * @returns routhr instance
      * @example
-     * routhr.use((req, res) => {
+     * routhr.register('/', (req, res) => {
      *    res.send('Hello World');
      * });
      */
+    register(path: string, callback?: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
+        if (path === undefined || path === null) {
+            if (!this.silent) {
+                this.message.error('Missing path parameter.');
+            }
+        }
+        if (callback === undefined || callback === null) {
+            if (!this.silent) {
+                this.message.error('Missing callback parameter.');
+            }
+        }
+        try {
+            this.app.use(callback as any);
+        }
+        catch (err) {
+            if (!this.silent) {
+                console.log(`Error registering middleware: ${err}`);
+            }
+        }
+        return this;
+    }
+    /* Method use */
+    /**
+     * Registers middleware with the application.
+     * @param callback (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void
+     * @returns routhr instance
+     * @example
+     * routhr.useWithoutPath((req, res) => {
+     *   res.send('Hello World');
+     * });
+    */
     use(callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
         if (callback === undefined || callback === null) {
             if (!this.silent) {
@@ -171,28 +218,27 @@ export default class Routhr {
     }
     /* Method set */
     /**
-     * Registers middleware with the application but only for a specific route.
-     * @param path: string
-     * @param callback - (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void
-     * @returns routhr instance
+     * Assign settings `name` to `value`.
+     * @param name - string
+     * @param value - any
+     * @returns `routhr` instance
      * @example
-     * routhr.set('/', (req, res) => {
-     *   res.send('Hello World');
-     * });
+     * routhr.set('foo', 'bar');
+     * routhr.get('foo'); // => 'bar'
      */
-    set(path: string, callback: (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void) {
-        if (path === undefined || path === null) {
+    set(name: string, value: any) {
+        if (name === undefined || name === null) {
             if (!this.silent) {
-                this.message.error('Missing path parameter.');
+                this.message.error('Missing name parameter.');
             }
         }
-        if (callback === undefined || callback === null) {
+        if (value === undefined || value === null) {
             if (!this.silent) {
-                this.message.error('Missing callback parameter.');
+                this.message.error('Missing value parameter.');
             }
         }
         try {
-            this.app.set(path, callback);
+            this.app.set(name, value);
         }
         catch (err) {
             if (!this.silent) {
