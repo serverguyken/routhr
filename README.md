@@ -16,17 +16,17 @@ npm install routhr
 ```ts
 import Routhr  from 'routhr';
 import routes from './routes';
-const routhr = new Routhr();
+const app = new Routhr();
 
 // Start server
-routhr.start(3000); // start server on port 3000
+app.start(3000); // start server on port 3000
 
 // Routes
-routhr.use('/', req, res) => {
+app.use('/', req, res) => {
   res.send('Hello World')
 }
-// or call useRoutes method
 
+// or call useRoutes method
 import { RouteInterface } from 'routhr';
 const routes: RouteInterface[] = [
     {
@@ -42,5 +42,5 @@ const routes: RouteInterface[] = [
     }
 ];
 
-routhr.useRoutes(routes); // create routes 
+app.useRoutes(routes); 
 ```
