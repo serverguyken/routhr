@@ -1,5 +1,9 @@
 import { Request, Response , NextFunction} from "express";
-
+import { IResponseResult, IResponseStatus} from "./status"
+export {
+    IResponseResult,
+    IResponseStatus
+}
 export interface RouthrInterface {
     routes: RouteInterface[];
     route: RouteProps;

@@ -420,4 +420,38 @@ export default class Routhr {
     }
 }
 
-export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface, express };
+
+import { IResponseStatus, IResponseResult } from "./interface";
+
+/**
+ * Returns a status object with the code, indication and message
+ * @param code  The response code
+ * @param errInt  The error code
+ * @param message  The message to return
+ * @returns Object
+ */
+const createStatus = (code: number, errInt: number, message: string) => {
+    const indication = errInt === 0 ? 'success' : 'failed';
+    const status: IResponseStatus = {
+        code,
+        indication,
+        message
+    }
+    return status;
+}
+/**
+ * Returns a response object with the status and the data
+ * @param status The status to return
+ * @param data  The data to return
+ * @returns Object
+ */
+const createResponse = <T>(status: IResponseStatus, data: T): IResponseResult<T> => {
+    return {
+        status,
+        data
+    }
+}
+
+
+
+export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface, express, createResponse, createStatus };
