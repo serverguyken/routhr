@@ -18,10 +18,7 @@ import Routhr  from 'routhr';
 import routes from './routes';
 const app = new Routhr();
 
-// Start server
-app.start(3000); // start server on port 3000
-
-// Routes
+// Create an API route
 app.use('/', req, res) => {
   res.send('Hello World')
 }
@@ -43,4 +40,7 @@ const routes: RouteInterface[] = [
 ];
 
 app.useRoutes(routes); 
+
+// Start server
+app.start(3000);
 ```
