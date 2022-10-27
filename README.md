@@ -1,4 +1,4 @@
-<img src="https://cdn.kehindeakinsanya.com/images/routhr.png" width="240" height="200"/>
+<img src="https://ik.imagekit.io/serverguyken/4CCB3318-632C-4C7B-8612-E4D9F24844D7_S-A3z03OT.jpeg?ik-sdk-version=javascript-1.4.3&updatedAt=1666853721471" width="240" height="200"/>
 
 # Routhr
 
