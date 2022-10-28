@@ -426,12 +426,12 @@ import { IResponseStatus, IResponseResult } from "./interface";
 /**
  * Returns a status object with the code, indication and message
  * @param code  The response code
- * @param errInt  The error code
+ * @param errInt  The error code - 0: success, 1: failure
  * @param message  The message to return
  * @returns Object
  */
 const createStatus = (code: number, errInt: number, message: string) => {
-    const indication = errInt === 0 ? 'success' : 'failed';
+    const indication = errInt === 0 ? 'success' : 'failure';
     const status: IResponseStatus = {
         code,
         indication,

@@ -1,6 +1,6 @@
 export interface IResponseStatus {
     code: number;
-    indication: 'success' | 'failed';
+    indication: 'success' | 'failure';
     message: string;
 }
 
