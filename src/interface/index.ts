@@ -63,7 +63,7 @@ export interface RouteInterface {
     /**
      *The method of the route
     **/
-    method: string;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'ALL';
     /* Handler is a function that takes a request and response object as parameters. */
     /**
      * A Function that handles the request and response object.
