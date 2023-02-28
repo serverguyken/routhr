@@ -1,8 +1,8 @@
-import express, { RequestHandler } from 'express';
+import express, { RequestHandler, } from 'express';
 import { RouthrInterface, RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface, RouteProps, RouthrMiddleWareInterface } from './interface';
 import Message from './message';
 import { generateId } from './utils';
-
+import borderParser from 'body-parser';
 
 /* Routhr */
 /**
@@ -26,6 +26,12 @@ export default class Routhr {
      **/
     nolog: boolean;
     private message: Message;
+    json: {
+        (options?: borderParser.OptionsJson): RequestHandler;
+    }
+    urlencoded: {
+        (options?: borderParser.OptionsUrlencoded): RequestHandler;
+    }
     constructor() {
         this.app = express();
         this.request = express.request;
@@ -47,6 +53,8 @@ export default class Routhr {
             queries: {},
             params: {},
         };
+        this.json = borderParser.json;
+        this.urlencoded = borderParser.urlencoded;
     }
     /* Method useRoutes */
     /**
