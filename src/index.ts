@@ -430,7 +430,7 @@ import { IResponseStatus, IResponseResult } from "./interface";
  * @param message  The message to return
  * @returns Object
  */
-const createStatus = (code: number, errInt: number, message: string) => {
+const CreateStatus = (code: number, errInt: number, message: string) => {
     const indication = errInt === 0 ? 'success' : 'failure';
     const status: IResponseStatus = {
         code,
@@ -445,7 +445,7 @@ const createStatus = (code: number, errInt: number, message: string) => {
  * @param data  The data to return
  * @returns Object
  */
-const createResponse = <T>(status: IResponseStatus, data: T): IResponseResult<T> => {
+const CreateResponse = <T>(status: IResponseStatus, data: T): IResponseResult<T> => {
     return {
         status,
         data
@@ -454,4 +454,4 @@ const createResponse = <T>(status: IResponseStatus, data: T): IResponseResult<T>
 
 
 
-export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface, express, createResponse, createStatus };
+export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface, express, CreateResponse, CreateStatus };
