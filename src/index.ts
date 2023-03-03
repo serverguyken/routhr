@@ -1,5 +1,5 @@
 import express, { RequestHandler, } from 'express';
-import { RouthrInterface, RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface, RouteProps, RouthrMiddleWareInterface, HandlerInterface } from './interface';
+import { RouthrInterface, RouteInterface, RequestInterface, ResponseInterface, NextFunctionInterface, RouteProps, RouthrMiddleWareInterface, HandlerInterface, MiddlewareInterface } from './interface';
 import Message from './message';
 import { generateId } from './utils';
 import borderParser from 'body-parser';
@@ -177,7 +177,7 @@ export default class Routhr {
      *    res.send('Hello World');
      * });
      */
-    register<Path extends string>(path: Path, callback: HandlerInterface | HandlerInterface[]) {
+    register<Path extends string>(path: Path, callback: MiddlewareInterface | MiddlewareInterface[]) {
         if (path === undefined || path === null) {
             if (!this.silent) {
                 this.message.error('Missing path parameter.');
@@ -208,7 +208,7 @@ export default class Routhr {
      *   res.send('Hello World');
      * });
     */
-    use(callback: HandlerInterface | HandlerInterface[]) {
+    use(callback: MiddlewareInterface | MiddlewareInterface[]) {
         if (callback === undefined || callback === null) {
             if (!this.silent) {
                 this.message.error('Missing callback parameter.');
