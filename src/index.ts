@@ -43,7 +43,7 @@ export default class Routhr {
         }
         this.silent = false;
         this.nolog = false;
-        this.message = new Message();
+        this.message = new Message(this.nolog, this.silent);
         this.route = {
             id: '',
             path: '',
@@ -139,7 +139,7 @@ export default class Routhr {
     private JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
         if (req.method === 'POST' || req.method === 'PUT') {
             if (req.headers['content-type'] !== 'application/json') {
-                throw new Error('Invalid content-type. Expected application/json');
+                this.message.error('[ROUTHR] Content-Type must be application/json');
             }
             else {
                 let data = '';
@@ -166,35 +166,197 @@ export default class Routhr {
             next();
         }
     };
+    /* Method get */
+    /**
+     * Routes HTTP GET requests to the specified path with the specified handler function.
+     * @param path Path to register the route on
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.get('/', (req, res) => {
+     *   res.send('Hello World');
+     * });
+        */
+    get<Path extends string, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.get(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method post */
+    /**
+     * Routes HTTP POST requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.post('/', (req, res) => {
+     *  res.send('Hello World');
+     * });
+        */
+    post<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.post(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method put */
+    /**
+     * Routes HTTP PUT requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.put('/', (req, res) => {
+     * res.send('Hello World');
+     * });
+     * */
+    put<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.put(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method delete */
+    /**
+     * Routes HTTP DELETE requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.delete('/', (req, res) => {
+     * res.send('Hello World');
+     * });
+     * */
+    delete<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.delete(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method patch */
+    /**
+     * Routes HTTP PATCH requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.patch('/', (req, res) => {
+     * res.send('Hello World');
+     * });
+     * */
+    patch<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.patch(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method options */
+    /**
+     * Routes HTTP OPTIONS requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.options('/', (req, res) => {
+     * res.send('Hello World');
+     * });
+     * */
+    options<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.options(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method head */
+    /**
+     * Routes HTTP HEAD requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.head('/', (req, res) => {
+     * res.send('Hello World');
+     * });
+     * */
+    head<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handler === undefined || handler === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.head(path, handler);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
     /* Method register */
     /**
      * Registers middleware with the application.
      * @param path Path to register the middleware on
-     * @param callback Middleware function to register for the given path
+     * @param callback Middleware function or array of middleware functions to register.
      * @returns routhr instance
      * @example
      * routhr.register('/', (req, res) => {
      *    res.send('Hello World');
      * });
      */
-    register<Path extends string>(path: Path, callback: MiddlewareInterface | MiddlewareInterface[]) {
+    register<Path extends string, Middleware extends MiddlewareInterface | MiddlewareInterface[]>(path: Path, callback: Middleware) {
         if (path === undefined || path === null) {
-            if (!this.silent) {
-                this.message.error('Missing path parameter.');
-            }
+            this.message.error('[ROUTHR] Missing path parameter.');
         }
         if (callback === undefined || callback === null) {
-            if (!this.silent) {
-                this.message.error('Missing callback parameter.');
-            }
+            this.message.error('[ROUTHR] Missing callback parameter.');
         }
         try {
             this.app.use(path, callback);
         }
         catch (err) {
-            if (!this.silent) {
-                console.log(`Error registering middleware: ${err}`);
-            }
+            this.message.error(`[ROUTHR] Error registering middleware: ${err}`);
         }
         return this;
     }
@@ -210,17 +372,13 @@ export default class Routhr {
     */
     use(callback: MiddlewareInterface | MiddlewareInterface[]) {
         if (callback === undefined || callback === null) {
-            if (!this.silent) {
-                this.message.error('Missing callback parameter.');
-            }
+            this.message.error('[ROUTHR] Missing callback parameter.');
         }
         try {
             this.app.use(callback);
         }
         catch (err) {
-            if (!this.silent) {
-                console.log(`Error registering middleware: ${err}`);
-            }
+            this.message.error(`[ROUTHR] Error registering middleware: ${err}`);
         }
         return this;
     }
@@ -236,30 +394,23 @@ export default class Routhr {
      */
     set(name: string, value: any) {
         if (name === undefined || name === null) {
-            if (!this.silent) {
-                this.message.error('Missing name parameter.');
-            }
+            this.message.error('[ROUTHR] Missing name parameter.');
         }
         if (value === undefined || value === null) {
-            if (!this.silent) {
-                this.message.error('Missing value parameter.');
-            }
+            this.message.error('[ROUTHR] Missing value parameter.');
         }
         try {
             this.app.set(name, value);
         }
         catch (err) {
-            if (!this.silent) {
-                console.log(`Error registering middleware: ${err}`);
-            }
+            this.message.error(`[ROUTHR] Error registering middleware: ${err}`);
         }
         return this;
     }
+
     private checkMiddleware(route: RouteInterface, type_: string) {
         if (route.middleware && route.middlewares) {
-            if (!this.silent) {
-                this.message.error(`Route ${route.path} has both ${type_} and ${type_}s.`);
-            }
+            this.message.error(`[ROUTHR] Route ${route.path} has both ${type_} and ${type_}s.`);
         } else {
             return true
         }
@@ -394,9 +545,7 @@ export default class Routhr {
      **/
     listen(port: number, callback?: () => void) {
         if (this.routes.length === 0) {
-            if (!this.silent) {
-                throw new Error('No routes have been registered.');
-            }
+            this.message.error('[ROUTHR] No routes have been registered.');
         }
         this.app.listen(port, callback);
         return this;

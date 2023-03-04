@@ -1,10 +1,18 @@
 export default class Message {
-    constructor() {
+    private nolog: boolean;
+    private silent: boolean;
+    constructor(nolog: boolean, silent: boolean) {
+        this.silent = silent;
+        this.nolog = nolog;
     }
     create(...message: string[]): void {
-        console.log(...message);
+        if (!this.nolog) {
+            console.log(...message);
+        }
     }
     error(message: string): void {
-        throw new Error(message);
+        if (!this.silent) {
+            throw new Error(message);
+        }
     }
 }
