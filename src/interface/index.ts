@@ -39,7 +39,7 @@ export interface ResponseInterface extends Response {
 export interface NextFunctionInterface extends NextFunction {
 }
 
-export type HandlerInterface = (req: RequestInterface, res: ResponseInterface, next?: NextFunctionInterface) => void;
+export type HandlerInterface = (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
 export type MiddlewareInterface = (req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) => void;
 
 export interface BuiltinMiddlewareInterface {
