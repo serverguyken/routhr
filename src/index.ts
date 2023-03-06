@@ -177,15 +177,15 @@ export default class Routhr {
      *   res.send('Hello World');
      * });
         */
-    get<Path extends string, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    get<Path extends string, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.get(path, handler);
+            this.app.get(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
@@ -201,15 +201,15 @@ export default class Routhr {
      *  res.send('Hello World');
      * });
         */
-    post<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    post<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.post(path, handler);
+            this.app.post(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
@@ -225,15 +225,15 @@ export default class Routhr {
      * res.send('Hello World');
      * });
      * */
-    put<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    put<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.put(path, handler);
+            this.app.put(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
@@ -249,15 +249,15 @@ export default class Routhr {
      * res.send('Hello World');
      * });
      * */
-    delete<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    delete<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.delete(path, handler);
+            this.app.delete(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
@@ -273,15 +273,15 @@ export default class Routhr {
      * res.send('Hello World');
      * });
      * */
-    patch<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    patch<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.patch(path, handler);
+            this.app.patch(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
@@ -297,15 +297,15 @@ export default class Routhr {
      * res.send('Hello World');
      * });
      * */
-    options<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    options<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.options(path, handler);
+            this.app.options(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
@@ -321,15 +321,15 @@ export default class Routhr {
      * res.send('Hello World');
      * });
      * */
-    head<Path extends string | RegExp, Handler extends HandlerInterface | HandlerInterface[]>(path: Path, handler: Handler) {
+    head<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
         if (path === undefined || path === null) {
             this.message.error('[ROUTHR] Missing path parameter.');
         }
-        if (handler === undefined || handler === null) {
+        if (handlers === undefined || handlers === null) {
             this.message.error('[ROUTHR] Missing handler parameter.');
         }
         try {
-            this.app.head(path, handler);
+            this.app.head(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
