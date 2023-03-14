@@ -4,7 +4,7 @@ export interface IResponseStatus {
     message: string;
 }
 
-export interface IResponseResult<T> {
+export interface IResponseResult<IResponseStatus, IResponseData> {
     status: IResponseStatus;
-    data: T;
+    data: IResponseData;
 }

@@ -602,7 +602,7 @@ const CreateStatus = (code: number, errInt: number, message: string) => {
  * @param data  The data to return
  * @returns Object
  */
-const CreateResponse = <T>(status: IResponseStatus, data: T): IResponseResult<T> => {
+const CreateResponse = <IResponseData>(status: IResponseStatus, data: IResponseData): IResponseResult<IResponseStatus, IResponseData> => {
     return {
         status,
         data
