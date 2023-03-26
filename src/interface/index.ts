@@ -21,10 +21,10 @@ export interface RouthrInterface {
     start: (callback?: () => void) => void;
 }
 
-export interface RequestInterface<Auth = null, CustomProperty = null> extends Request {
+export interface RequestInterface<Auth = any, CustomProperty = any> extends Request {
     rawBody?: string;
     routhr?: RouthrObject;
-    auth?: Auth;
+    auth?: Auth | { user: {uid: string, role: any}};
     custom?: CustomProperty;
 }
 
