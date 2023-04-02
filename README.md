@@ -19,7 +19,7 @@ import routes from './routes';
 const app = new Routhr();
 
 // Create an API route
-app.use('/', req, res) => {
+app.get('/', req, res) => {
   res.send('Hello World')
 }
 
