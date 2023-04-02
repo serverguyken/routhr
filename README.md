@@ -2,7 +2,7 @@
 
 # Routhr
 
-**Routhr** is a Node.js Framework for building web Applications and APIs.
+**Routhr** is a lightweight Node.js Framework for building web Applications and APIs.
 
 <img src="https://img.shields.io/npm/v/routhr?style=for-the-badge"/> <img src="https://img.shields.io/npm/dt/routhr?style=for-the-badge"/> <img src="https://img.shields.io/github/checks-status/serverguyken/routhr/main?style=for-the-badge"/> 
 
