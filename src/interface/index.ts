@@ -24,7 +24,7 @@ export interface RouthrInterface {
 export interface RequestInterface<Auth = any, CustomProperty = any> extends Request {
     rawBody?: string;
     routhr?: RouthrObject;
-    auth?: Auth | { user: {uid: string, role: any}};
+    auth?: Auth | { user: {uid: string, role: any, permissions: any}};
     custom?: CustomProperty;
 }
 
