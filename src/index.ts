@@ -407,7 +407,71 @@ export default class Routhr {
         }
         return this;
     }
-
+    /* Method engine */
+    /**
+     * Register the given template engine callback `fn` as `ext`.
+     * When a file with the given `ext` is rendered it will invoke
+     * the given callback `fn`, for example when you try to render
+     * "foo.jade" it will invoke the given callback with "foo.jade"
+     * as the filename.
+     * @param ext - string
+     * @param fn - (path: string, options: any, callback: (err: any, str: string) => void) => void
+     * @returns `routhr` instance
+     * @example
+     * routhr.engine('html', require('ejs').renderFile);
+     */
+    engine(ext: string, fn: (path: string, options: any, callback: (err: any, str: string) => void) => void) {
+        if (ext === undefined || ext === null) {
+            this.message.error('[ROUTHR] Missing ext parameter.');
+        }
+        if (fn === undefined || fn === null) {
+            this.message.error('[ROUTHR] Missing fn parameter.');
+        }
+        try {
+            this.app.engine(ext, fn);
+        }
+        catch (err) {
+            this.message.error(`[ROUTHR] Error registering middleware: ${err}`);
+        }
+        return this;
+    }
+    /* Method render */
+    /**
+     * Render `view` with the given `options` and optional callback `fn`.
+     * When a callback function is given a response will _not_ be made
+     * automatically, otherwise a response of _200_ and _text/html_ is given.
+     * Options:
+     *  - `cache`     boolean hinting to the engine it should cache
+     * - `filename`  filename of the view being rendered
+     * @param view - string
+     * @param options - any
+     * @param fn - (err: any, html: string) => void
+     * @returns `routhr` instance
+     * @example
+     * routhr.render('email', {
+     *  name: 'Tobi'
+     * }, function(err, html){
+     * // ...
+     * });
+     */
+    render(view: string, options: any, fn: (err: any, html: string) => void) {
+        if (view === undefined || view === null) {
+            this.message.error('[ROUTHR] Missing view parameter.');
+        }
+        if (options === undefined || options === null) {
+            this.message.error('[ROUTHR] Missing options parameter.');
+        }
+        if (fn === undefined || fn === null) {
+            this.message.error('[ROUTHR] Missing fn parameter.');
+        }
+        try {
+            this.app.render(view, options, fn);
+        }
+        catch (err) {
+            this.message.error(`[ROUTHR] Error registering middleware: ${err}`);
+        }
+        return this;
+    }
     private checkMiddleware(route: RouteInterface, type_: string) {
         if (route.middleware && route.middlewares) {
             this.message.error(`[ROUTHR] Route ${route.path} has both ${type_} and ${type_}s.`);
