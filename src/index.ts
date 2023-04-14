@@ -420,7 +420,7 @@ export default class Routhr {
      * @example
      * routhr.engine('html', require('ejs').renderFile);
      */
-    engine(ext: string, fn: (path: string, options: any, callback: (err: any, str: string) => void) => void) {
+    engine(ext: string, fn: (path: string, options: any, callback: (err: any, rendered: string) => void) => void) {
         if (ext === undefined || ext === null) {
             this.message.error('[ROUTHR] Missing ext parameter.');
         }
