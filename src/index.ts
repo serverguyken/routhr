@@ -437,41 +437,29 @@ export default class Routhr {
     }
     /* Method render */
     /**
-     * Render `view` with the given `options` and optional callback `fn`.
-     * When a callback function is given a response will _not_ be made
-     * automatically, otherwise a response of _200_ and _text/html_ is given.
-     * Options:
-     *  - `cache`     boolean hinting to the engine it should cache
-     * - `filename`  filename of the view being rendered
-     * @param view - string
-     * @param options - any
+     * Render the given view `name` name with `options` and a callback `fn` accepting an error and the rendered template string.
+     * @param name - string
+     * @param options - object
      * @param fn - (err: any, html: string) => void
      * @returns `routhr` instance
      * @example
-     * routhr.render('email', {
-     *  name: 'Tobi'
-     * }, function(err, html){
+     * routhr.render('email', { name: 'Tobi' }, function(err, html){
      * // ...
      * });
      */
-    render(view: string, options: any, fn: (err: any, html: string) => void) {
-        if (view === undefined || view === null) {
-            this.message.error('[ROUTHR] Missing view parameter.');
-        }
-        if (options === undefined || options === null) {
-            this.message.error('[ROUTHR] Missing options parameter.');
-        }
-        if (fn === undefined || fn === null) {
-            this.message.error('[ROUTHR] Missing fn parameter.');
+    render(name: string, options?: object | undefined, fn?: (err: Error, html?: string) => void) {
+        if (name === undefined || name === null) {
+            this.message.error('[ROUTHR] Missing name parameter.');
         }
         try {
-            this.app.render(view, options, fn);
+            this.app.render(name, options, fn);
         }
         catch (err) {
             this.message.error(`[ROUTHR] Error registering middleware: ${err}`);
         }
         return this;
     }
+    
     private checkMiddleware(route: RouteInterface, type_: string) {
         if (route.middleware && route.middlewares) {
             this.message.error(`[ROUTHR] Route ${route.path} has both ${type_} and ${type_}s.`);
