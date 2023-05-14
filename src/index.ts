@@ -635,12 +635,12 @@ import { IResponseStatus, IResponseResult } from "./interface";
 /**
  * Creates a response status object
  * @param code  The response code
- * @param errInt  The error code - 0: success, 1: failure
- * @param message  The message to return
- * @param statusCode  The status code to return
- * @param timestamp  The timestamp to return
- * @param path  The path to return
- * @param errors  The errors to return
+ * @param errInt  Code to indicate if the response is an error or not. 0 = success, 1 = failure
+ * @param message  The status message
+ * @param statusCode  The status code e.g. "OK" or "UNAUTHORIZED"
+ * @param timestamp  The timestamp of when the response was created
+ * @param path  The path of the request
+ * @param errors  The errors that occurred
  */
 const CreateStatus = (code: number, errInt: number, message: string, statusCode?: string, timestamp?: string, path?: string, errors?: IResponseStatus['errors']): IResponseStatus => {
     const indication = errInt === 0 ? 'success' : 'failure';
