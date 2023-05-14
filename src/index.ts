@@ -639,12 +639,16 @@ import { IResponseStatus, IResponseResult } from "./interface";
  * @param message  The message to return
  * @returns Object
  */
-const CreateStatus = (code: number, errInt: number, message: string) => {
+const CreateStatus = (code: number, errInt: number, message: string, statusCode?: string, timestamp?: string, path?: string, errors?: IResponseStatus['errors']): IResponseStatus => {
     const indication = errInt === 0 ? 'success' : 'failure';
     const status: IResponseStatus = {
         code,
         indication,
-        message
+        message,
+        statusCode : statusCode ? statusCode : '',
+        timestamp: timestamp ? timestamp : new Date().toISOString(),
+        path: path ? path : '',
+        errors: errors ? errors : []
     }
     return status;
 }
