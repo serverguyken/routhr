@@ -633,11 +633,14 @@ export default class Routhr {
 import { IResponseStatus, IResponseResult } from "./interface";
 
 /**
- * Returns a status object with the code, indication and message
+ * Creates a response status object
  * @param code  The response code
  * @param errInt  The error code - 0: success, 1: failure
  * @param message  The message to return
- * @returns Object
+ * @param statusCode  The status code to return
+ * @param timestamp  The timestamp to return
+ * @param path  The path to return
+ * @param errors  The errors to return
  */
 const CreateStatus = (code: number, errInt: number, message: string, statusCode?: string, timestamp?: string, path?: string, errors?: IResponseStatus['errors']): IResponseStatus => {
     const indication = errInt === 0 ? 'success' : 'failure';
@@ -653,10 +656,9 @@ const CreateStatus = (code: number, errInt: number, message: string, statusCode?
     return status;
 }
 /**
- * Returns a response object with the status and the data
+ * Creates a response object
  * @param status The status to return
  * @param data  The data to return
- * @returns Object
  */
 const CreateResponse = <IResponseData>(status: IResponseStatus, data: IResponseData): IResponseResult<IResponseStatus, IResponseData> => {
     return {
