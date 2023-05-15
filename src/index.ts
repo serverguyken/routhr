@@ -687,6 +687,8 @@ export const STATUSCODES = {
     510: 'NOT_EXTENDED',
     511: 'NETWORK_AUTHENTICATION_REQUIRED'
 } as const;
+
+type TStatusCode = keyof typeof STATUSCODES;
 /**
  * Creates a response status object
  * @param code  The response code
@@ -697,12 +699,12 @@ export const STATUSCODES = {
  * @param path  The path of the request
  * @param errors  The errors that occurred
  */
-const CreateStatus = (code: keyof typeof STATUSCODES, errInt: number, message: string, statusCode?: string, timestamp?: string, path?: string, errors?: IResponseStatus['errors']): IResponseStatus => {
+const CreateStatus = (code: TStatusCode | number, errInt: number, message: string, statusCode?: string, timestamp?: string, path?: string, errors?: IResponseStatus['errors']): IResponseStatus => {
     const indication = errInt === 0 ? 'success' : 'failure';
    
-    const GetStatusCode = (code: keyof typeof STATUSCODES) => {
-        if (STATUSCODES[code]) {
-            return STATUSCODES[code];
+    const GetStatusCode = (code: TStatusCode | number) => {
+        if (STATUSCODES[code as TStatusCode]) {
+            return STATUSCODES[code as TStatusCode];
         } else {
             return 'UNKNOWN_STATUS_CODE';
         }
@@ -718,6 +720,7 @@ const CreateStatus = (code: keyof typeof STATUSCODES, errInt: number, message: s
     }
     return status;
 }
+
 /**
  * Creates a response object
  * @param status The status to return
@@ -729,7 +732,6 @@ const CreateResponse = <IResponseData>(status: IResponseStatus, data: IResponseD
         data
     }
 }
-
 
 
 export { RequestInterface, ResponseInterface, NextFunctionInterface, RouteInterface, express, CreateResponse, CreateStatus };
