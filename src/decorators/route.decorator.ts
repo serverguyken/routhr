@@ -15,7 +15,7 @@ export interface RouteMetadata {
     }
 }
 
-const defaultROuteMetadata: RouteMetadata = {
+const defaultRouteMetadata: RouteMetadata = {
     prefix: '/',
     options: {
         middleware: []
@@ -39,7 +39,7 @@ export function Route(prefix?: string, options?: {
     middleware?: MiddlewareInterface | MiddlewareInterface[];
 }): ClassDecorator {
     return (target: object) => {
-        Reflect.defineMetadata(ROUTE_PREFIX_METADATA, prefix || '/', target);
+        Reflect.defineMetadata(ROUTE_PREFIX_METADATA, prefix && prefix !== '' ? prefix : defaultRouteMetadata.prefix, target);
         if (options?.middleware) {
             if (Array.isArray(options.middleware)) {
                 Reflect.defineMetadata(ROUTE_MIDDLEWARE_METADATA, options.middleware, target);

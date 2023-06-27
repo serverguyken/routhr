@@ -679,16 +679,13 @@ export default class Routhr {
     private createPath(route_prefix: string, path: string, method: RequestMethod) {
         const path_append = this.appendPrefix(path || '')
         const get_path = route_prefix + path_append;
-        console.log("get_path", get_path);
-
         const globalPrefix = this.globalPrefix?.exclude && this.globalPrefix?.exclude.find((exclude) => exclude.path === path_append && exclude.method === method) ? '' : this.globalPrefix?.prefix;
 
         return this.appendPrefix(get_path, globalPrefix);
     }
     private setControllers(controllers: TController[]) {
         const routes: RouteInterface[] = [];
-        for (const controller of controllers) {
-
+        controllers.forEach((controller) => {
             // get the controller instance
             const ctr: any = controller;
             const instance = new ctr();
@@ -698,7 +695,6 @@ export default class Routhr {
 
             // get all methods of the controller
             const handlers = Object.getOwnPropertyNames(ctr.prototype).filter(method => method !== 'constructor' && typeof ctr.prototype[method] === 'function');
-            console.log("handlers", handlers);
             handlers.forEach(handler => {
                 // get the method of the controller
                 const method = Reflect.getMetadata(METHOD_METADATA, instance[handler]);
@@ -733,12 +729,12 @@ export default class Routhr {
                     return;
                 }
             });
-            break;
-        }
+        });
         this.routes = routes;
         this.initControllers();
     }
     private initControllers() {
+        this.message.create("[ROUTHR] Initializing controllers...")
         for (const route of this.routes) {
             switch (route.method) {
                 case 'GET':
@@ -768,7 +764,8 @@ export default class Routhr {
                 default:
                     throw new Error(`Unsupported route method: ${route.method}`);
             }
-        } 
+        }
+        this.message.create(`[ROUTHR] Total routes registered: ${this.routes.length}`);
     }
     /* Method listen */
     /**
@@ -800,6 +797,7 @@ export default class Routhr {
      * });
      **/
     start(port: number, callback?: () => void) {
+        this.message.create(`[ROUTHR] Server is running on http://localhost:${port}`);
         this.app.listen(port, callback);
         return this;
     }
