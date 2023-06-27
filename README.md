@@ -11,36 +11,18 @@
 ```bash
 npm install routhr
 ```
-## Usage
+## Documentation (coming soon)
 
-```ts
-import Routhr  from 'routhr';
-import routes from './routes';
-const app = new Routhr();
+VIsit [routhr.org/docs](https://routhr.org/docs) to get started.
 
-// Create an API route
-app.get('/', req, res) => {
-  res.send('Hello World')
-}
 
-// or call useRoutes method
-import { RouteInterface } from 'routhr';
-const routes: RouteInterface[] = [
-    {
-        path: '/',
-        method: 'GET',
-        handler: (req, res) => {
-            res.send('Hello World');
-        },
-        middleware: (req, res, next) => {
-            console.log('Middleware');
-            next();
-        }
-    }
-];
+## Support
 
-app.useRoutes(routes); 
+For support, email <a href="mailto:serverguyken@gmail.com">serverguyken@gmail.com</a>
 
-// Start server
-app.start(3000);
-```
+## Security 
+If you discover any security related issues or vulnerabilities, please I encourage you to not open an issue but rather report them to me via email at <a href="mailto:serverguyken@gmail.com">serverguyken@gmail.com</a>
+
+## License
+
+Routhr is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
