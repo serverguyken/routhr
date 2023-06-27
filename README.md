@@ -25,4 +25,4 @@ If you discover any security related issues or vulnerabilities, please I encoura
 
 ## License
 
-Routhr is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Routhr is licensed under the MIT license. See [License File](LICENSE.md) for more information.
