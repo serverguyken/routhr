@@ -1,6 +1,6 @@
 {
   "name": "routhr",
-  "version": "1.8.1",
+  "version": "1.8.4",
   "description": "**Routhr** is a Node.js Framework for building web Applications and APIs.",
   "main": "./index.js",
   "scripts": {
@@ -17,9 +17,11 @@
   },
   "types": "./index.d.ts",
   "files": [
+    "index.js",
+    "index.d.ts",
     "decorators",
     "enums",
-    "interfaces",
+    "interface",
     "utils",
     "types",
     "constants"
