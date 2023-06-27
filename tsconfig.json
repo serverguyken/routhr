@@ -4,8 +4,9 @@
         "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
         /* Modules */
         "module": "commonjs", /* Specify what module code is generated. */
-        "rootDir": "./src", /* Specify the root directory of input files. */
-        "outDir": "./lib", /* Specify the location for output files to be placed. */
+        "rootDir": "src", /* Specify the root directory of input files. */
+        "outDir": "", /* Specify the location for output files to be placed. */
+        "baseUrl": "./", /* Specify the base directory to resolve non-relative module names. */
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

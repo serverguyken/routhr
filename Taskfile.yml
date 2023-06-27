@@ -1,0 +1,7 @@
+# remove build files
+version: '3'
+
+tasks:
+  clear:
+    cmds:
+      - rm -rf *.js *.d.ts *.js.map utils types constants decorators interface enums 

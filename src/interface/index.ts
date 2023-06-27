@@ -1,5 +1,5 @@
-import { Request, Response , NextFunction} from "express";
-import { IResponseResult, IResponseStatus} from "./status"
+import { Request, Response , NextFunction } from "express";
+import { IResponseResult, IResponseStatus } from "./status"
 import { TRequestMethod } from "../types";
 export {
     IResponseResult,

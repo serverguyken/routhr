@@ -795,7 +795,7 @@ export default class Routhr {
      * @param callback: any
      * @returns routhr instance
      * @example
-     * routhr.start(() => {
+     * routhr.start(3000, () => {
      *  console.log('Server is running on port 3000');
      * });
      **/

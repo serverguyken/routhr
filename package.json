@@ -1,18 +1,28 @@
 {
   "name": "routhr",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "**Routhr** is a Node.js Framework for building web Applications and APIs.",
-  "main": "./lib/index.js",
+  "main": "./index.js",
   "scripts": {
-    "dev": "node ./lib/test.js",
-    "start": "node ./lib/test.js",
-    "build": "tsc -p tsconfig.json",
+    "dev": "node ./test.js",
+    "build": "tsc -p tsconfig.json && npm run build:decorators && npm run build:enums && npm run build:interfaces && npm run build:utils && npm run build:types && npm run build:constants",
+    "build:utils": "tsc --build tsconfig.utils.json",
+    "build:decorators": "tsc --build tsconfig.decorators.json",
+    "build:enums": "tsc --build tsconfig.enums.json",
+    "build:interfaces": "tsc --build tsconfig.interfaces.json",
+    "build:types": "tsc --build tsconfig.types.json",
+    "build:constants": "tsc --build tsconfig.constants.json",
     "prepublishOnly": "npm run build",
     "watch": "tsc -p tsconfig.json -w"
   },
-  "types": "./lib/index.d.ts",
+  "types": "./index.d.ts",
   "files": [
-    "lib"
+    "decorators",
+    "enums",
+    "interfaces",
+    "utils",
+    "types",
+    "constants"
   ],
   "keywords": [
     "express",
