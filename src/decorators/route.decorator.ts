@@ -16,7 +16,7 @@ export interface RouteMetadata {
 }
 
 const defaultRouteMetadata: RouteMetadata = {
-    prefix: '/',
+    prefix: '',
     options: {
         middleware: []
     }
