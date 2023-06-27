@@ -1,9 +1,10 @@
 {
   "name": "routhr",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "**Routhr** is a Node.js Framework for building web Applications and APIs.",
   "main": "./lib/index.js",
   "scripts": {
+    "dev": "node ./lib/test.js",
     "start": "node ./lib/test.js",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
@@ -30,6 +31,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "nodemon": "^2.0.15",
+    "reflect-metadata": "^0.1.13",
     "routhr": "^1.4.4",
     "typescript": "^4.6.3",
     "uuid": "^8.3.2"

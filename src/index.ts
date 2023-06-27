@@ -14,6 +14,8 @@ export default class Routhr {
     readonly request;
     private routes: RouteInterface[];
     private route: RouteProps;
+    private controllers: TController[];
+    private globalPrefix: TGlobalPrefix | null;
     middleware: RouthrMiddleWareInterface;
     /* Property silent */
     /**
@@ -55,6 +57,8 @@ export default class Routhr {
         };
         this.json = borderParser.json;
         this.urlencoded = borderParser.urlencoded;
+        this.controllers = [];
+        this.globalPrefix = null;
     }
     /* Method useRoutes */
     /**
@@ -81,12 +85,78 @@ export default class Routhr {
      * ]);
      */
     useRoutes(routes: RouteInterface[]) {
+
+        // if routes have already been registered, throw an error
+        if (this.routes.length > 0) {
+            this.message.error('[ROUTHR] You cannot register routes more than once.');
+        }
         this.routes = routes;
         this.init();
         return this;
     }
-    /* Built in middleware */
-    /* Method setRouteProps */
+
+    /**
+     * Registers controllers with the application.
+     * @param controllers `TController[]`
+     * @returns `routhr` instance
+     * @example
+     * routhr.useControllers([
+     *  AppController,
+     *  UserController,
+     * ]);
+     */
+    useControllers(controllers: TController[]) {
+        if (controllers === undefined || controllers === null) {
+            this.message.error('[ROUTHR] Missing controllers parameter.');
+        }
+
+        // if routes have been registered, throw an error
+        if (this.routes.length > 0) {
+            this.message.error('[ROUTHR] You cannot register controllers after routes have been registered.');
+        }
+
+        // if controllers have already been registered, throw an error
+        if (this.controllers.length > 0) {
+            this.message.error('[ROUTHR] You cannot register controllers more than once.');
+        }
+        this.setControllers(controllers);
+        return this;
+    }
+    /**
+     * Set global prefix for all routes.
+     * 
+     * **Note**: Only supports the `useControllers` method.
+     * @param prefix - string
+     * @param options - object
+     * @returns `routhr` instance
+     */
+    setGlobalPrefix(prefix: TGlobalPrefix['prefix'], options?: {
+        exclude?: TGlobalPrefix['exclude']
+    }) {
+        if (prefix === undefined || prefix === null) {
+            this.message.error('[ROUTHR] Missing prefix parameter.');
+        }
+
+        if (options && options.exclude) {
+            options.exclude.forEach((exclude) => {
+                if (exclude.path === undefined || exclude.path === null) {
+                    this.message.error('[ROUTHR] Missing exclude path parameter.');
+                }
+                if (exclude.method === undefined || exclude.method === null) {
+                    this.message.error('[ROUTHR] Missing exclude method parameter.');
+                }
+            });
+            this.globalPrefix = {
+                prefix,
+                exclude: options.exclude,
+            }
+        } else {
+            this.globalPrefix = {
+                prefix,
+            }
+            return this;
+        }
+    }
     /**
      * Middleware that sets the routhr instance on the request object.
     **/
@@ -124,6 +194,7 @@ export default class Routhr {
         const params = req.params;
         this.setRoute(id, path, queries, params);
     }
+
     private setRoute(id: string, path: string, queries: {}, params: {}, domain: string = '', subdomain: string = '', subdomains: string[] = []) {
         this.route = {
             id,
@@ -136,6 +207,7 @@ export default class Routhr {
         }
         return this.route;
     }
+
     private JSONParser(req: RequestInterface, res: ResponseInterface, next: NextFunctionInterface) {
         if (req.method === 'POST' || req.method === 'PUT') {
             if (req.headers['content-type'] !== 'application/json') {
@@ -459,7 +531,7 @@ export default class Routhr {
         }
         return this;
     }
-    
+
     private checkMiddleware(route: RouteInterface, type_: string) {
         if (route.middleware && route.middlewares) {
             this.message.error(`[ROUTHR] Route ${route.path} has both ${type_} and ${type_}s.`);
@@ -469,7 +541,6 @@ export default class Routhr {
     }
 
     private init() {
-        let log = '';
         for (const route of this.routes) {
             switch (route.method) {
                 case 'GET':
@@ -579,9 +650,125 @@ export default class Routhr {
                 default:
                     throw new Error(`Unsupported route method: ${route.method}`);
             }
-            setTimeout(() => {
-            }, 500);
         }
+    }
+    private startsWithSlash(path: string): boolean {
+        return path[0] === '/';
+    }
+    private appendPrefix(path: string, globalPrefix?: string) {
+        if (globalPrefix) {
+            if (this.startsWithSlash(globalPrefix) && this.startsWithSlash(path)) {
+                return `${globalPrefix}${path}`;
+            } else if (!this.startsWithSlash(globalPrefix) && !this.startsWithSlash(path)) {
+                return `/${globalPrefix}/${path}`;
+            } else if (!this.startsWithSlash(globalPrefix) && this.startsWithSlash(path)) {
+                return `/${globalPrefix}${path}`;
+            } else if (this.startsWithSlash(globalPrefix) && !this.startsWithSlash(path)) {
+                return `${globalPrefix}/${path}`;
+            } else {
+                return `${globalPrefix}${path}`
+            }
+        } else {
+            if (this.startsWithSlash(path)) {
+                return path;
+            } else {
+                return `/${path}`;
+            }
+        }
+    }
+    private createPath(route_prefix: string, path: string, method: RequestMethod) {
+        const path_append = this.appendPrefix(path || '')
+        const get_path = route_prefix + path_append;
+        console.log("get_path", get_path);
+
+        const globalPrefix = this.globalPrefix?.exclude && this.globalPrefix?.exclude.find((exclude) => exclude.path === path_append && exclude.method === method) ? '' : this.globalPrefix?.prefix;
+
+        return this.appendPrefix(get_path, globalPrefix);
+    }
+    private setControllers(controllers: TController[]) {
+        const routes: RouteInterface[] = [];
+        for (const controller of controllers) {
+
+            // get the controller instance
+            const ctr: any = controller;
+            const instance = new ctr();
+
+            // get the path of the controller
+            const route_prefix = Reflect.getMetadata(ROUTE_PREFIX_METADATA, controller);
+
+            // get all methods of the controller
+            const handlers = Object.getOwnPropertyNames(ctr.prototype).filter(method => method !== 'constructor' && typeof ctr.prototype[method] === 'function');
+            console.log("handlers", handlers);
+            handlers.forEach(handler => {
+                // get the method of the controller
+                const method = Reflect.getMetadata(METHOD_METADATA, instance[handler]);
+
+                // get the path of the controller
+                const path = this.createPath(route_prefix, Reflect.getMetadata(PATH_METADATA, instance[handler]), method);
+
+
+                // get the middleware of the controller
+                const method_middleware = Reflect.getMetadata(METHOD_MIDDLEWARE_METADATA, instance[handler]);
+                const middleware = Reflect.getMetadata(MIDDLEWARE_METADATA, instance[handler]);
+                const route_middleware = Reflect.getMetadata(ROUTE_MIDDLEWARE_METADATA, controller);
+
+                if (method_middleware && middleware) {
+                    if (method_middleware.length > 0 && middleware.length > 0) {
+                        this.message.error(`[ROUTHR] Cannot use both ${method} middleware and the @Middleware decorator, use one or the other.`);
+                    }
+                }
+
+                const middlewareToUse = method_middleware && method_middleware.length > 0 ? method_middleware : middleware && middleware.length > 0 ? middleware : [];
+                const new_routes: RouteInterface = {
+                    path,
+                    method,
+                    handler: instance[handler],
+                    middlewares: [...route_middleware, ...middlewareToUse]
+                }
+
+                // if no method, then the method is just a regular method and not a route, so we  dont need to push it to the routes array and we dont need to do anything else
+                if (method) {
+                    routes.push(new_routes);
+                } else {
+                    return;
+                }
+            });
+            break;
+        }
+        this.routes = routes;
+        this.initControllers();
+    }
+    private initControllers() {
+        for (const route of this.routes) {
+            switch (route.method) {
+                case 'GET':
+                    this.app.get(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'POST':
+                    this.app.post(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'PUT':
+                    this.app.put(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'DELETE':
+                    this.app.delete(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'PATCH':
+                    this.app.patch(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'HEAD':
+                    this.app.head(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'OPTIONS':
+                    this.app.options(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                case 'ALL':
+                    this.app.all(`${route.path}`, [this.setRoutePropsMiddleware, ...route.middlewares!], route.handler);
+                    break;
+                default:
+                    throw new Error(`Unsupported route method: ${route.method}`);
+            }
+        } 
     }
     /* Method listen */
     /**
@@ -631,6 +818,9 @@ export default class Routhr {
 
 
 import { IResponseStatus, IResponseResult } from "./interface";
+import { TRequestMethod, TController, TGlobalPrefix } from './types';
+import { METHOD_METADATA, METHOD_MIDDLEWARE_METADATA, MIDDLEWARE_METADATA, PATH_METADATA, ROUTE_MIDDLEWARE_METADATA, ROUTE_PREFIX_METADATA } from './constants';
+import { RequestMethod } from './enums';
 export const STATUSCODES = {
     200: 'OK',
     201: 'CREATED',
@@ -701,7 +891,7 @@ type TStatusCode = keyof typeof STATUSCODES;
  */
 const CreateStatus = (code: TStatusCode | number, errInt: number, message: string, statusCode?: string, timestamp?: string, path?: string, errors?: IResponseStatus['errors']): IResponseStatus => {
     const indication = errInt === 0 ? 'success' : 'failure';
-   
+
     const GetStatusCode = (code: TStatusCode | number) => {
         if (STATUSCODES[code as TStatusCode]) {
             return STATUSCODES[code as TStatusCode];
@@ -713,7 +903,7 @@ const CreateStatus = (code: TStatusCode | number, errInt: number, message: strin
         code,
         indication,
         message,
-        statusCode : statusCode ? statusCode : GetStatusCode(code),
+        statusCode: statusCode ? statusCode : GetStatusCode(code),
         timestamp: timestamp ? timestamp : new Date().toISOString(),
         path: path ? path : '',
         errors: errors ? errors : []

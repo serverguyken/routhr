@@ -1,5 +1,6 @@
 import { Request, Response , NextFunction} from "express";
 import { IResponseResult, IResponseStatus} from "./status"
+import { TRequestMethod } from "../types";
 export {
     IResponseResult,
     IResponseStatus
@@ -64,7 +65,7 @@ export interface RouteInterface {
     /**
      *The method of the route
     **/
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'ALL';
+    method: TRequestMethod;
     /* Handler is a function that takes a request and response object as parameters. */
     /**
      * A Function that handles the request and response object.

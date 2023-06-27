@@ -7,6 +7,8 @@
         "rootDir": "./src", /* Specify the root directory of input files. */
         "outDir": "./lib", /* Specify the location for output files to be placed. */
         "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
         /* Type Checking */
         "strict": true, /* Enable all strict type-checking options. */
