@@ -130,7 +130,7 @@ export default class Routhr {
      * @param options - object
      * @returns `routhr` instance
      */
-    private setGlobalPrefix(prefix: TGlobalPrefix['prefix'], options?: {
+    setGlobalPrefix(prefix: TGlobalPrefix['prefix'], options?: {
         exclude?: TGlobalPrefix['exclude']
     }) {
         if (prefix === undefined || prefix === null) {
