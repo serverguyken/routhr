@@ -3,7 +3,10 @@ import { RouthrInterface, RouteInterface, RequestInterface, ResponseInterface, N
 import Message from './message';
 import { generateId } from './utils';
 import borderParser from 'body-parser';
-
+import { IResponseStatus, IResponseResult } from "./interface";
+import { TRequestMethod, TController, TGlobalPrefix } from './types';
+import { METHOD_METADATA, METHOD_MIDDLEWARE_METADATA, MIDDLEWARE_METADATA, PATH_METADATA, ROUTE_MIDDLEWARE_METADATA, ROUTE_PREFIX_METADATA } from './constants';
+import { RequestMethod } from './enums';
 /* Routhr */
 /**
  * Create a Routhr application.
@@ -695,9 +698,14 @@ export default class Routhr {
 
             // get all methods of the controller
             const handlers = Object.getOwnPropertyNames(ctr.prototype).filter(method => method !== 'constructor' && typeof ctr.prototype[method] === 'function');
+
             handlers.forEach(handler => {
+                const new_handler = instance[handler].bind(instance);
+                
                 // get the method of the controller
                 const method = Reflect.getMetadata(METHOD_METADATA, instance[handler]);
+                
+
 
                 // get the path of the controller
                 const path = this.createPath(route_prefix, Reflect.getMetadata(PATH_METADATA, instance[handler]), method);
@@ -718,7 +726,7 @@ export default class Routhr {
                 const new_routes: RouteInterface = {
                     path,
                     method,
-                    handler: instance[handler],
+                    handler: new_handler,
                     middlewares: [...route_middleware, ...middlewareToUse]
                 }
 
@@ -731,6 +739,7 @@ export default class Routhr {
             });
         });
         this.routes = routes;
+        console.log(this.routes);
         this.initControllers();
     }
     private initControllers() {
@@ -815,10 +824,7 @@ export default class Routhr {
 }
 
 
-import { IResponseStatus, IResponseResult } from "./interface";
-import { TRequestMethod, TController, TGlobalPrefix } from './types';
-import { METHOD_METADATA, METHOD_MIDDLEWARE_METADATA, MIDDLEWARE_METADATA, PATH_METADATA, ROUTE_MIDDLEWARE_METADATA, ROUTE_PREFIX_METADATA } from './constants';
-import { RequestMethod } from './enums';
+
 export const STATUSCODES = {
     200: 'OK',
     201: 'CREATED',
@@ -875,6 +881,8 @@ export const STATUSCODES = {
     510: 'NOT_EXTENDED',
     511: 'NETWORK_AUTHENTICATION_REQUIRED'
 } as const;
+
+
 
 type TStatusCode = keyof typeof STATUSCODES;
 /**
