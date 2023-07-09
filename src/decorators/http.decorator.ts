@@ -23,6 +23,10 @@ const defaultMetadata: HTTPMetadata = {
     [MIDDLEWARE_METADATA]: []
 };
 
+export type THTTPMethodReturn = <TPath extends string>(path?: TPath, options?: {
+    middleware?: MiddlewareInterface | MiddlewareInterface[];
+}) => MethodDecorator
+
 export const HTTP = (metadata: HTTPMetadata): MethodDecorator => {
     const path = metadata[PATH_METADATA] || defaultMetadata[PATH_METADATA];
     const method = metadata[METHOD_METADATA] || defaultMetadata[METHOD_METADATA];
@@ -39,7 +43,7 @@ export const HTTP = (metadata: HTTPMetadata): MethodDecorator => {
     };
 }
 
-export const mapRequestMethodDecorator = (method: TRequestMethod) => (path?: string, options?: {
+export const mapRequestMethodDecorator = <Path extends string>(method: TRequestMethod) => (path?: Path, options?: {
     middleware?: MiddlewareInterface | MiddlewareInterface[];
 }): MethodDecorator => {
     return HTTP({
@@ -55,7 +59,8 @@ export const mapRequestMethodDecorator = (method: TRequestMethod) => (path?: str
  * @returns MethodDecorator
  */
 
-export const Get = mapRequestMethodDecorator('GET');
+export const Get = mapRequestMethodDecorator('GET') as THTTPMethodReturn
+
 
 /**
  * HTTP POST method decorator - Defines the route for the POST method
@@ -63,14 +68,14 @@ export const Get = mapRequestMethodDecorator('GET');
  * @returns MethodDecorator
 */
 
-export const Post = mapRequestMethodDecorator('POST');
+export const Post = mapRequestMethodDecorator('POST') as THTTPMethodReturn;
 
 /**
  * HTTP PUT method decorator - Defines the route for the PUT method
  * @param path - Route path
 */
 
-export const Put = mapRequestMethodDecorator('PUT');
+export const Put = mapRequestMethodDecorator('PUT') as THTTPMethodReturn;
 
 
 /**
@@ -79,7 +84,7 @@ export const Put = mapRequestMethodDecorator('PUT');
  * @returns MethodDecorator
 */
 
-export const Delete = mapRequestMethodDecorator('DELETE');
+export const Delete = mapRequestMethodDecorator('DELETE') as THTTPMethodReturn;
 
 /**
  * HTTP PATCH method decorator - Defines the route for the PATCH method
@@ -87,7 +92,7 @@ export const Delete = mapRequestMethodDecorator('DELETE');
  * @returns MethodDecorator
 */
 
-export const Patch = mapRequestMethodDecorator('PATCH');
+export const Patch = mapRequestMethodDecorator('PATCH') as THTTPMethodReturn;
 
 /**
  * HTTP OPTIONS method decorator - Defines the route for the OPTIONS method
@@ -95,7 +100,7 @@ export const Patch = mapRequestMethodDecorator('PATCH');
  * @returns MethodDecorator
 */
 
-export const Options = mapRequestMethodDecorator('OPTIONS');
+export const Options = mapRequestMethodDecorator('OPTIONS') as THTTPMethodReturn;
 
 /**
  * HTTP HEAD method decorator - Defines the route for the HEAD method
@@ -103,7 +108,7 @@ export const Options = mapRequestMethodDecorator('OPTIONS');
  * @returns MethodDecorator
 */
 
-export const Head = mapRequestMethodDecorator('HEAD');
+export const Head = mapRequestMethodDecorator('HEAD') as THTTPMethodReturn;
 
 /**
  * HTTP ALL method decorator - Defines the route for all the HTTP methods
@@ -111,4 +116,4 @@ export const Head = mapRequestMethodDecorator('HEAD');
  * @returns MethodDecorator
 */
 
-export const All = mapRequestMethodDecorator('ALL');
+export const All = mapRequestMethodDecorator('ALL') as THTTPMethodReturn;

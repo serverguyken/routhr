@@ -29,13 +29,13 @@ const defaultRouteMetadata: RouteMetadata = {
 
 
 export function Route(): ClassDecorator
-export function Route(prefix: string, options?: {
+export function Route<TPrefix extends string>(prefix: TPrefix, options?: {
     middleware?: MiddlewareInterface | MiddlewareInterface[];
 }): ClassDecorator
-export function Route(prefix?: string, options?: {
+export function Route<TPrefix extends string>(prefix?: TPrefix, options?: {
     middleware?: MiddlewareInterface | MiddlewareInterface[];
 }): ClassDecorator
-export function Route(prefix?: string, options?: {
+export function Route<TPrefix extends string>(prefix?: TPrefix, options?: {
     middleware?: MiddlewareInterface | MiddlewareInterface[];
 }): ClassDecorator {
     return (target: object) => {
