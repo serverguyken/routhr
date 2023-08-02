@@ -739,7 +739,6 @@ export default class Routhr {
             });
         });
         this.routes = routes;
-        console.log(this.routes);
         this.initControllers();
     }
     private initControllers() {
