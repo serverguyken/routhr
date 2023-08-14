@@ -1,6 +1,6 @@
 {
   "name": "routhr",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "**Routhr** is a Node.js Framework for building web Applications and APIs.",
   "main": "./index.js",
   "scripts": {
