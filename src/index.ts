@@ -297,7 +297,7 @@ export default class Routhr {
      * @returns routhr instance
      * @example
      * routhr.put('/', (req, res) => {
-     * res.send('Hello World');
+     *  res.send('Hello World');
      * });
      * */
     put<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
@@ -321,7 +321,7 @@ export default class Routhr {
      * @returns routhr instance
      * @example
      * routhr.delete('/', (req, res) => {
-     * res.send('Hello World');
+     *  res.send('Hello World');
      * });
      * */
     delete<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
@@ -345,7 +345,7 @@ export default class Routhr {
      * @returns routhr instance
      * @example
      * routhr.patch('/', (req, res) => {
-     * res.send('Hello World');
+     *  res.send('Hello World');
      * });
      * */
     patch<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
@@ -369,7 +369,7 @@ export default class Routhr {
      * @returns routhr instance
      * @example
      * routhr.options('/', (req, res) => {
-     * res.send('Hello World');
+     *  res.send('Hello World');
      * });
      * */
     options<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
@@ -381,6 +381,30 @@ export default class Routhr {
         }
         try {
             this.app.options(path, handlers);
+        } catch (err) {
+            this.message.error(`[ROUTHR] Error registering route: ${err}`);
+        }
+    }
+    /* Method all */
+    /**
+     * Routes all HTTP requests to the specified path with the specified handler function.
+     * @param path Path to register the route on. Can be a string or a regular expression.
+     * @param handler Route handler function
+     * @returns routhr instance
+     * @example
+     * routhr.all('/', (req, res) => {
+     *  res.send('Hello World');
+     * });
+     * */
+    all<Path extends string | RegExp, Handlers extends HandlerInterface[]>(path: Path, ...handlers: Handlers) {
+        if (path === undefined || path === null) {
+            this.message.error('[ROUTHR] Missing path parameter.');
+        }
+        if (handlers === undefined || handlers === null) {
+            this.message.error('[ROUTHR] Missing handler parameter.');
+        }
+        try {
+            this.app.all(path, handlers);
         } catch (err) {
             this.message.error(`[ROUTHR] Error registering route: ${err}`);
         }
